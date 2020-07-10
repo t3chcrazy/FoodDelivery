@@ -1,5 +1,5 @@
 import React, {useState, useRef, useEffect} from 'react'
-import {View, Text, ScrollView, StyleSheet, TextInput, Image, useWindowDimensions, FlatList, TouchableOpacity, BackHandler} from 'react-native'
+import {View, Text, ScrollView, StyleSheet, TextInput, Image, useWindowDimensions, FlatList, TouchableOpacity, BackHandler, Alert} from 'react-native'
 import IconButton from '../components/IconButton'
 import CarouselItem from '../components/CarouselItem'
 import Filter from '../components/Filter'
@@ -14,6 +14,15 @@ import { MENU_HEIGHT, carouselArray, PANELS, FILTERS, INDI_SIZE } from '../confi
 
 
 const handleBack = () => {
+    Alert.alert("Food delivery app", "Do you want to exit?", [
+        {
+            text: "Cancel",
+        },
+        {
+            text: "Close",
+            onPress: () => BackHandler.exitApp()
+        }
+    ], {cancelable: true})
     return true
 }
 
@@ -91,15 +100,20 @@ const styles = StyleSheet.create({
         backgroundColor: "red",
         height: 400
     },
+    // profileContainer: {
+    //     height: 344,
+    //     width: 216,
+    //     position: "absolute",
+    //     right: 0,
+    //     top: 30,
+    //     borderTopLeftRadius: 10,
+    //     borderBottomLeftRadius: 10,
+    //     backgroundColor: "#fff"
+    // },
     profileContainer: {
-        height: 344,
-        width: 216,
-        position: "absolute",
-        right: 0,
-        top: 30,
-        borderTopLeftRadius: 10,
-        borderBottomLeftRadius: 10,
-        backgroundColor: "#fff"
+        backgroundColor: "#dfe6e9",
+        height: "100%",
+        width: "90%"
     },
     profile: {
         paddingLeft: 23,
@@ -157,6 +171,16 @@ const styles = StyleSheet.create({
     },
     logIn: {
         borderColor: "green"
+    },
+    drawerOption: {
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        paddingBottom: 5,
+        width: "40%",
+        marginBottom: 10,
+    },
+    drawerOptionText: {
+        fontSize: 20,
+        fontWeight: "bold",
     }
 })
 
@@ -220,6 +244,18 @@ function MainPage({navigation, logoutUser, isLoggedIn}) {
                 </View>
             </View>
             <View style = {{paddingLeft: 20}}>
+                <View style = {styles.drawerOption}>
+                    <Text style = {styles.drawerOptionText}>
+                        User Profile
+                    </Text>
+                </View>
+                <TouchableOpacity onPress = {() => navigation.navigate("AutoDetect")}>
+                    <View style = {styles.drawerOption}>
+                        <Text style = {styles.drawerOptionText}>
+                            Map
+                        </Text>
+                    </View>
+                </TouchableOpacity>
                 {new Array(6).fill(0).map(c => <View style = {styles.userContent}></View>)}
             </View>
             <View style = {styles.settingsContainer}>
@@ -246,25 +282,18 @@ function MainPage({navigation, logoutUser, isLoggedIn}) {
         <DrawerLayout
             ref = {drawerRef}
             drawerWidth = {width}
-            drawerPosition = {"right"}
+            drawerPosition = {"left"}
             renderNavigationView = {() => UserProfile()}
-            drawerBackgroundColor = "rgba(0, 0, 0, 0.5)"
         >
             <View style = {{flex: 1, alignItems: "center"}}>
-                {/* <BottomTab height = {MENU_HEIGHT}>
-                    <View style = {styles.mainPageTab}>
-                        {TAB_ICONS.map(t => <Image source = {t} />)}
-                    </View>
-                </BottomTab> */}
                 <ScrollView showsVerticalScrollIndicator = {false} contentContainerStyle = {{width: 0.9*width, alignItems: "center"}}>
                     <View style = {{width: 0.9*width, ...styles.header}}>
                         <View style = {{position: "absolute", left: 0}}>
-                            <IconButton size = {20} icon = {require("../assets/img/menu.png")} />
+                            <IconButton size = {20} icon = {require("../assets/img/menu.png")} action = {clickProfile} />
                         </View>
                         <Image style = {{alignSelf: "center", width: 56, height: 54}} source = {require("../assets/img/logo.png")} />
                         <View style = {styles.customize}>
-                            <IconButton hasMargin = {true} size = {20} icon = {require("../assets/img/settings.png")} />
-                            <IconButton size = {20} icon = {require("../assets/img/login.png")} action = {clickProfile} />
+                            {isLoggedIn? <IconButton size = {20} icon = {require("../assets/img/settings.png")} />: null}
                         </View>
                     </View>
                     <View style = {{width: 0.9*width, marginHorizontal: 0.05*width, ...styles.carousel}}>

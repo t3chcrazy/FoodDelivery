@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux'
 
 const Tabs = createBottomTabNavigator()
 
-const ICON_SIZE = 30
+const ICON_SIZE = 25
 
 const styles = StyleSheet.create({
     icon: {
@@ -24,7 +24,7 @@ function TabScreens() {
 
     return (
         <Tabs.Navigator
-            tabBarOptions = {{activeTintColor: "green", inactiveBackgroundColor: "#3D037E", activeBackgroundColor: "#C9C9C9"}}
+            tabBarOptions = {{activeTintColor: "#f1f2f6", inactiveBackgroundColor: "#fff", activeBackgroundColor: "#636e72"}}
             screenOptions = {({ route }) => ({
                 tabBarIcon: () => {
                     switch (route.name) {
@@ -42,14 +42,14 @@ function TabScreens() {
         >
             <Tabs.Screen component = {MainScreens} name = "MainScreens" options = {{title: "Main"}} />
             <Tabs.Screen component = {Search} name = "Search" />
-            {isLoggedIn?
+            {/* {isLoggedIn?
             null:
             <>
                 <Tabs.Screen component = {Login} name = "Login" />
                 <Tabs.Screen component = {Register} name = "Register" />
-            </>}
-            {/* <Tabs.Screen component = {Login} name = "Login" />
-            <Tabs.Screen component = {Register} name = "Register" /> */}
+            </>} */}
+            <Tabs.Screen component = {Login} name = "Login" />
+            <Tabs.Screen component = {Register} name = "Register" />
         </Tabs.Navigator>
     )
 }
