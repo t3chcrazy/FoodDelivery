@@ -1,8 +1,8 @@
 import { LOGIN_SUCCESS, LOGIN_ERROR, LOGIN_IDLE, LOGOUT_SUCCESS } from './loginTypes.js'
-import { authenticateUser } from '../../services/authService'
+import { authenticateUser, removeUserToken } from '../../services/authService'
 import AsyncStorage from '@react-native-community/async-storage'
-import axios from 'axios'
-import { base_url } from '../../config/AppConfig.js'
+// import axios from 'axios'
+// import { base_url } from '../../config/AppConfig.js'
 
 export const loginSuccessful = token => ({
     type: LOGIN_SUCCESS,
@@ -24,7 +24,7 @@ export const logoutSuccessful = () => ({
 
 export const loginUser = (email, password) => {
     return dispatch => {
-        axios.post("https://reqres.in/api/login", {email: email, password: password})
+        authenticateUser({email, password})
         .then(response => {
             const token = response.data.token
             AsyncStorage.setItem("userToken", token)
@@ -43,9 +43,9 @@ export const loginUser = (email, password) => {
 
 export const logoutUser = () => {
     return dispatch => {
-        AsyncStorage.removeItem("userToken", () => {
-            console.log("Reached here")
-            dispatch(logoutSuccessful())
-        })
+        // AsyncStorage.removeItem("userToken", () => {
+        //     dispatch(logoutSuccessful())
+        // })
+        removeUserToken(() => dispatch(logoutSuccessful()))
     }
 }

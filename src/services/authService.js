@@ -6,7 +6,7 @@ export const authenticateUser = data => {
     return axios.post(`${base_url}/api/login`, data)
 }
 
-export const logoutUser = () => {
-    AsyncStorage.removeItem("userToken")
+export const removeUserToken = callback => {
+    AsyncStorage.removeItem("userToken", callback)
     .catch(error => console.log("Error occured with logging out", error))
 }

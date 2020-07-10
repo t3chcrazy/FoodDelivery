@@ -42,14 +42,14 @@ function TabScreens() {
         >
             <Tabs.Screen component = {MainScreens} name = "MainScreens" options = {{title: "Main"}} />
             <Tabs.Screen component = {Search} name = "Search" />
-            {/* {isLoggedIn?
+            {isLoggedIn?
             null:
             <>
                 <Tabs.Screen component = {Login} name = "Login" />
                 <Tabs.Screen component = {Register} name = "Register" />
-            </>} */}
-            <Tabs.Screen component = {Login} name = "Login" />
-            <Tabs.Screen component = {Register} name = "Register" />
+            </>}
+            {/* <Tabs.Screen component = {Login} name = "Login" />
+            <Tabs.Screen component = {Register} name = "Register" /> */}
         </Tabs.Navigator>
     )
 }
