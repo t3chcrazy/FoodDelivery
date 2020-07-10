@@ -6,9 +6,8 @@ import Reviews from '../components/Reviews'
 import MenuItem from '../components/MenuItem'
 import BottomTab from '../components/BottomTab'
 import { useFocusEffect, useRoute } from '@react-navigation/native'
+import { SPACING, MENU_HEGHT, CART_SIZE } from '../config/Constants'
 
-const SPACING = 20
-const MENU_HEGHT = 65
 
 const styles = StyleSheet.create({
     imageCover: {
@@ -136,7 +135,7 @@ function RestaurantMenu({navigation}) {
                     <TouchableWithoutFeedback onPress = {() => navigation.navigate("Checkout")}>
                         <View style = {{flexDirection: "row", alignItems: "center"}}>
                             <View style = {{paddingRight: 6}}>
-                                <Image source = {require("../assets/img/cart.png")} />
+                                <Image source = {require("../assets/img/cart.png")} style = {{width: CART_SIZE, height: CART_SIZE}} />
                             </View>
                             <Text style = {{...styles.tabText, borderLeftColor: "#fff", paddingLeft: 6}}>View cart</Text>
                         </View>

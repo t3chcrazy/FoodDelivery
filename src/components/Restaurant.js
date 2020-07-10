@@ -2,6 +2,7 @@ import React, {memo} from 'react'
 import {View, Text, Image, StyleSheet, TouchableWithoutFeedback} from 'react-native'
 import Ratings from './Ratings'
 import FoodBackground from './FoodBackground'
+import { TIME_SIZE } from '../config/Constants'
 
 const styles = StyleSheet.create({
     main: {
@@ -82,7 +83,7 @@ function Restaurant({restaurant, handlePress}) {
                     <Ratings rating = {rating} />
                     <View style = {styles.delivery}>
                         <View style = {{paddingRight: 4}}>
-                            <Image source = {require("../assets/img/Time.png")} />
+                            <Image source = {require("../assets/img/Time.png")} style = {{width: TIME_SIZE, height: TIME_SIZE}} />
                         </View>
                         <View style = {styles.deliveryTextWrapper}>
                             <Text style = {styles.deliveryText}>{deliveryTime} min</Text>

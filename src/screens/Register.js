@@ -1,7 +1,6 @@
 import React, {useState} from 'react'
 import {View, Text, TextInput, ImageBackground, StyleSheet, useWindowDimensions, TouchableWithoutFeedback, KeyboardAvoidingView, PermissionsAndroid, BackHandler, Alert} from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
-import { useEffect } from 'react'
 
 const styles = StyleSheet.create({
     imageCover: {

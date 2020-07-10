@@ -1,18 +1,8 @@
-import React, {useState} from 'react'
+import React, {useState, useCallback} from 'react'
 import {View, Text, StyleSheet, Image, TouchableWithoutFeedback} from 'react-native'
 import PaymentCard from '../components/PaymentCard'
 import { useFocusEffect } from '@react-navigation/native'
-
-const paymentImages = [
-    require("../assets/img/paytm.png"),
-    require("../assets/img/phonepe.png"),
-    require("../assets/img/paypal.png"),
-    require("../assets/img/googlepay.png"),
-    require("../assets/img/visa.png"),
-    require("../assets/img/mastercard.png"),
-    require("../assets/img/stripe.png"),
-    require("../assets/img/payu.png")
-]
+import { paymentImages } from '../config/Constants'
 
 const styles = StyleSheet.create({
     header: {

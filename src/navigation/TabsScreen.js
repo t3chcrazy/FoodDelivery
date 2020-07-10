@@ -5,6 +5,7 @@ import Register from '../screens/Register'
 import Search from '../screens/Search'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import MainScreens from './MainScreens'
+import { useSelector } from 'react-redux'
 
 const Tabs = createBottomTabNavigator()
 
@@ -18,6 +19,9 @@ const styles = StyleSheet.create({
 })
 
 function TabScreens() {
+
+    const isLoggedIn = useSelector(state => state.isLoggedIn)
+
     return (
         <Tabs.Navigator
             tabBarOptions = {{activeTintColor: "green", inactiveBackgroundColor: "#3D037E", activeBackgroundColor: "#C9C9C9"}}
@@ -38,6 +42,12 @@ function TabScreens() {
         >
             <Tabs.Screen component = {MainScreens} name = "MainScreens" options = {{title: "Main"}} />
             <Tabs.Screen component = {Search} name = "Search" />
+            {/* {isLoggedIn?
+            null:
+            <>
+                <Tabs.Screen component = {Login} name = "Login" />
+                <Tabs.Screen component = {Register} name = "Register" />
+            </>} */}
             <Tabs.Screen component = {Login} name = "Login" />
             <Tabs.Screen component = {Register} name = "Register" />
         </Tabs.Navigator>

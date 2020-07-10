@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from 'react'
 import {View, Animated, StyleSheet, ImageBackground, Image, Easing} from 'react-native'
-import AsyncStorage from '@react-native-community/async-storage'
+import { LOGO_SIZE } from '../config/Constants'
 
 const {timing, Value, loop} = Animated
 
@@ -16,8 +16,6 @@ const styles = StyleSheet.create({
         height: 112,
     }
 })
-
-const LOGO_SIZE = 105
 
 function SplashScreen({navigation}) {
     const progressVal = useRef(new Value(0)).current

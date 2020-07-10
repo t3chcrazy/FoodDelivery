@@ -1,7 +1,9 @@
-import React, {useState, useRef, useEffect} from 'react'
+import React, {useState, useRef, useEffect, useCallback} from 'react'
 import {View, Text, StyleSheet, useWindowDimensions, Image, TextInput, TouchableOpacity, KeyboardAvoidingView, PermissionsAndroid, ActivityIndicator} from 'react-native'
 import Geolocation from 'react-native-geolocation-service'
 import MapView, {Marker} from 'react-native-maps'
+import { useFocusEffect } from '@react-navigation/native'
+import { FRACTION, SEARCH_ICON } from '../config/Constants'
 
 const styles = StyleSheet.create({
     root: {
@@ -109,15 +111,11 @@ const styles = StyleSheet.create({
     }
 })
 
-const FRACTION = 0.61
-
-function AutoDetect({route, navigation}) {
+function AutoDetect({navigation}) {
     const [location, setLocation] = useState(null)
     const [isDetected, setDetected] = useState(false)
     const {height: winHeight} = useWindowDimensions()
     const [coords, setCoords] = useState([])
-    // const {latitude, longitude} = route.params.latlng
-    // const {latitude, longitude} = useMemo(() => route.params.latlng, [route.params])
     const mapRef = useRef()
 
     const handlePress = () => {
@@ -125,6 +123,22 @@ function AutoDetect({route, navigation}) {
             navigation.navigate("MainPage", {coordinates: coords})
         })
     }
+
+    useFocusEffect(useCallback(() => {
+        const parent = navigation.dangerouslyGetParent()
+        if (parent) {
+            parent.setOptions({
+                tabBarVisible: false
+            })
+        }
+        return () => {
+            if (parent) {
+                parent.setOptions({
+                    tabBarVisible: true
+                })
+            }
+        }
+    }), [navigation.dangerouslyGetParent])
 
     useEffect(() => {
         async function getPermissions() {
@@ -196,9 +210,6 @@ function AutoDetect({route, navigation}) {
                     <View style = {{height: (1-FRACTION)*winHeight, ...styles.details}}>
                         <View style = {styles.status}>
                             <Image source = {require("../assets/img/loading.png")} />
-                            {/* <Text style = {styles.statusText}>
-                                {isDetected? "Location detected!": "Auto detecting your location..."}
-                            </Text> */}
                             {isDetected?
                             <View style = {{flexDirection: "row", alignSelf: "flex-start", justifyContent: "space-between", width: "100%"}}>
                                 <Text style = {styles.statusText}>
@@ -229,7 +240,7 @@ function AutoDetect({route, navigation}) {
                                         style = {{flex: 8, marginLeft: 10}}
                                     />
                                     <View style = {styles.magnifyWrapper}>
-                                        <Image source = {require("../assets/img/magnify.png")} />
+                                        <Image source = {require("../assets/img/magnify.png")} style = {{width: SEARCH_ICON, height: SEARCH_ICON}} />
                                     </View>
                                 </View>
                             </View>

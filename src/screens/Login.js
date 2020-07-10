@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import {View, Text, TextInput, ImageBackground, StyleSheet, useWindowDimensions, TouchableWithoutFeedback, KeyboardAvoidingView, PermissionsAndroid, BackHandler, Alert, TouchableOpacity} from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
 import { connect } from 'react-redux'
-import { loginUser } from '../src/store/login/loginActions'
+import { loginUser } from '../store/login/loginActions'
 
 const styles = StyleSheet.create({
     imageCover: {
@@ -69,8 +69,6 @@ const handleBack = () => {
     return true
 }
 
-const EMAIL_REGEX = /\S+@\S+\.\S+/
-
 function Login({navigation, isLoggedIn, error, loginUser}) {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -83,7 +81,7 @@ function Login({navigation, isLoggedIn, error, loginUser}) {
 
     useEffect(() => {
         if (isLoggedIn) {
-            navigation.navigate("MainScreens", {screen: "AutoDetect"})
+            navigation.navigate("AutoDetect")
         }
     }, [isLoggedIn])
     
@@ -111,6 +109,7 @@ function Login({navigation, isLoggedIn, error, loginUser}) {
                                 textContentType = "emailAddress"
                                 style = {styles.input}
                                 autoFocus = {true}
+                                autoCapitalize = "none"
                             />
                             {error? 
                             <Text style = {{color: "red", fontSize: 12, alignSelf: "flex-start", fontWeight: "bold"}}>

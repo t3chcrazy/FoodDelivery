@@ -1,10 +1,11 @@
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useEffect, useRef, useState, useCallback} from 'react'
 import {View, Text, Image, StyleSheet, useWindowDimensions, ActivityIndicator, PermissionsAndroid} from 'react-native'
 import BoughtItem from '../components/BoughtItem'
 import BottomTab from '../components/BottomTab'
 import MapView, {Marker} from 'react-native-maps'
 import Geolocation from 'react-native-geolocation-service'
 import { useFocusEffect } from '@react-navigation/native'
+import { latDelta, lngDelta } from '../config/Constants'
 
 
 const styles = StyleSheet.create({
@@ -102,10 +103,10 @@ const latlng = (lat, lng) => ({
     longitude: lng
 })
 
-const latDelta = 0.05
-const lngDelta = 0.04
+// const latDelta = 0.05
+// const lngDelta = 0.04
 
-function CartSummary() {
+function CartSummary({navigation}) {
     const {height: winHeight} = useWindowDimensions()
     const [coords, setCoords] = useState([])
     const mapRef = useRef()
@@ -179,7 +180,7 @@ function CartSummary() {
                  <BottomTab height = {58}>
                 <View style = {styles.deliverytab}>
                     <View style = {{flexDirection: "row"}}>
-                        <Image source = {require("../assets/img/customericon.png")} />
+                        <Image source = {require("../assets/img/customericon.png")} style = {{width: 22, height: 26}} />
                         <View style = {{marginLeft: 11.37}}>
                             <Text style = {styles.tabText}>DELIVERY AT</Text>
                             <Text style = {styles.tabText}>Rammurthy Nagar, Bangalore-560016</Text>

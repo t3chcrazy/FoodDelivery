@@ -1,59 +1,17 @@
 import React, {useState, useRef, useEffect} from 'react'
-import {View, Text, ScrollView, SafeAreaView, StyleSheet, TextInput, Image, useWindowDimensions, FlatList, TouchableOpacity, BackHandler} from 'react-native'
+import {View, Text, ScrollView, StyleSheet, TextInput, Image, useWindowDimensions, FlatList, TouchableOpacity, BackHandler} from 'react-native'
 import IconButton from '../components/IconButton'
 import CarouselItem from '../components/CarouselItem'
 import Filter from '../components/Filter'
 import restData from '../data/restData'
 import Restaurant from '../components/Restaurant'
-import BottomTab from '../components/BottomTab'
 import DrawerLayout from 'react-native-drawer-layout'
 import {useRoute} from '@react-navigation/native'
 import { connect } from 'react-redux'
-import { logoutUser, loginUser } from '../src/store/login/loginActions'
+import { logoutUser } from '../store/login/loginActions'
 import { useFocusEffect } from '@react-navigation/native'
+import { MENU_HEIGHT, carouselArray, PANELS, FILTERS, INDI_SIZE } from '../config/Constants'
 
-
-const MENU_HEIGHT = 58
-
-const carouselArray = [
-    {
-        title: "Discover new tasting experience",
-        icon: require("../assets/img/carousel1.png")
-    },
-    {
-        title: "Super fast delivery",
-        icon: require("../assets/img/carousel2.png")
-    },
-    {
-        title: "Restaurants with the best hygiene",
-        icon: require("../assets/img/carousel3.png")
-    },
-    {
-        title: "Schedule your orders",
-        icon: require("../assets/img/carousel4.png")
-    },
-    {
-        title: "A variety of cuisines to choose from",
-        icon: require("../assets/img/carousel5.png")
-    }
-]
-const PANELS = carouselArray.length
-
-const TAB_ICONS = [
-    require("../assets/img/home.png"),
-    require("../assets/img/search.png"),
-    require("../assets/img/offers.png"),
-    require("../assets/img/cart.png")
-]
-
-const FILTERS = [
-    "Rating 4.0+",
-    "Nearest",
-    "Best Seller",
-    "Veg Only"
-]
-
-const INDI_SIZE = 4
 
 const handleBack = () => {
     return true
@@ -236,6 +194,10 @@ function MainPage({navigation, logoutUser, isLoggedIn}) {
         }
         setActive(activeTab)
     }
+    const redireectLogin = () => {
+        drawerRef.current.closeDrawer()
+        navigation.navigate("Login")
+    }
     useFocusEffect(() => {
         BackHandler.addEventListener("hardwareBackPress", handleBack)
         return () => BackHandler.removeEventListener("hardwareBackPress", handleBack)
@@ -244,7 +206,7 @@ function MainPage({navigation, logoutUser, isLoggedIn}) {
         <View style = {styles.profileContainer}>
             <View style = {styles.profile}>
                 <View style = {{marginVertical: 11}}>
-                    <Image source = {require("../assets/img/back.png")} />
+                    <IconButton size = {25} icon = {require("../assets/img/back.png")} />
                 </View>
                 <View style = {styles.summary}>
                     <View style = {styles.avatar}>
@@ -270,7 +232,7 @@ function MainPage({navigation, logoutUser, isLoggedIn}) {
                     </View>
                 </TouchableOpacity>
                 :
-                <TouchableOpacity onPress = {() => navigation.navigate("Login")}>
+                <TouchableOpacity onPress = {redireectLogin}>
                     <View style = {[styles.logButton, styles.logIn]}>
                         <Text style = {{color: "green"}}>Login</Text>
                     </View>
@@ -302,7 +264,7 @@ function MainPage({navigation, logoutUser, isLoggedIn}) {
                         <Image style = {{alignSelf: "center", width: 56, height: 54}} source = {require("../assets/img/logo.png")} />
                         <View style = {styles.customize}>
                             <IconButton hasMargin = {true} size = {20} icon = {require("../assets/img/settings.png")} />
-                            <IconButton size = {20} icon = {require("../assets/img/profile.png")} action = {clickProfile} />
+                            <IconButton size = {20} icon = {require("../assets/img/login.png")} action = {clickProfile} />
                         </View>
                     </View>
                     <View style = {{width: 0.9*width, marginHorizontal: 0.05*width, ...styles.carousel}}>
@@ -315,7 +277,7 @@ function MainPage({navigation, logoutUser, isLoggedIn}) {
                     </View>
                     <View style = {{ ...styles.searchBar}}>
                         <View style = {styles.searchLogo}>
-                            <Image source = {require("../assets/img/search.png")} />
+                            <Image source = {require("../assets/img/search.png")} style = {{width: 27, height: 27}} />
                         </View>
                         <TextInput style = {styles.searchInput} placeholder = "Search food you like" />
                         <View style = {styles.searchFilter}>
