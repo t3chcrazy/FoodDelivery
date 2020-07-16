@@ -5,6 +5,7 @@ import MapView, {Marker} from 'react-native-maps'
 import { useFocusEffect } from '@react-navigation/native'
 import { FRACTION, SEARCH_ICON } from '../config/Constants'
 import IconButton from '../components/IconButton'
+import Geocoder from 'react-native-geocoding'
 
 const styles = StyleSheet.create({
     root: {
@@ -119,8 +120,9 @@ const styles = StyleSheet.create({
 })
 
 function AutoDetect({navigation}) {
-    const [location, setLocation] = useState(null)
+    // const [location, setLocation] = useState(null)
     const [isDetected, setDetected] = useState(false)
+    const [location, setLocation] = useState(null)
     const {height: winHeight} = useWindowDimensions()
     const [coords, setCoords] = useState([])
     const mapRef = useRef()
@@ -148,6 +150,8 @@ function AutoDetect({navigation}) {
     }), [navigation.dangerouslyGetParent])
 
     useEffect(() => {
+        // TODO: Get proper API key after setting up billing account
+        Geocoder.init("------")
         async function getPermissions() {
             const granted = await PermissionsAndroid.request(
                 PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
@@ -162,6 +166,12 @@ function AutoDetect({navigation}) {
                 Geolocation.getCurrentPosition(info => {
                     console.log(info)
                     const {latitude, longitude} = info.coords
+                    Geocoder.from(latitude, longitude)
+                    .then(json => {
+                        const addressComponent = json.results[0].address_components[0]
+                        setLocation(addressComponent)
+                    })
+                    .catch(error => console.log(error))
                     setCoords([latitude, longitude])
                     setTimeout(() => {
                         mapRef.current.animateToRegion({
@@ -195,7 +205,7 @@ function AutoDetect({navigation}) {
             </View>: 
             <>
                 <View style = {styles.backButton}>
-                    <IconButton icon = {require("../assets/img/back.png")} size = {40} hasMargin = {false} action = {() => navigation.goBack()} />
+                    <IconButton icon = {require("../assets/img/backWhite.png")} size = {40} hasMargin = {false} action = {() => navigation.goBack()} />
                 </View>
                 <View style = {{height: winHeight*FRACTION}}>
                     <View style = {styles.mapWrapper}>
@@ -244,8 +254,6 @@ function AutoDetect({navigation}) {
                                 </Text>
                                 <View style = {styles.inputWrapper}>
                                     <TextInput
-                                        value = {location}
-                                        onChangeText = {text => setLocation(text)}
                                         placeholder = "Search your location"
                                         style = {{flex: 8, marginLeft: 10}}
                                     />
@@ -259,7 +267,7 @@ function AutoDetect({navigation}) {
                                 <View style = {styles.currentLocation}>
                                     <View style = {{flexDirection: "row", alignItems: "center"}}>
                                         <Image source = {require("../assets/img/check.png")} />
-                                        <Text style = {{fontSize: 12, color: "#3D037E", marginLeft: 8}}>Ram Nagar</Text>
+                                        <Text style = {{fontSize: 12, color: "#3D037E", marginLeft: 8}}>{location === null? "Loading...": location}</Text>
                                     </View>
                                     <TouchableOpacity onPress = {handlePress}>
                                         <View>

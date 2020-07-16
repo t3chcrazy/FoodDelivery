@@ -1,5 +1,5 @@
-import React, {useState} from 'react'
-import {View, Text, TextInput, ImageBackground, StyleSheet, useWindowDimensions, TouchableWithoutFeedback, KeyboardAvoidingView, PermissionsAndroid, BackHandler, Alert} from 'react-native'
+import React, {useState, useCallback} from 'react'
+import {View, Text, TextInput, ImageBackground, StyleSheet, useWindowDimensions, TouchableWithoutFeedback, KeyboardAvoidingView} from 'react-native'
 import { useFocusEffect } from '@react-navigation/native'
 
 const styles = StyleSheet.create({
@@ -50,35 +50,33 @@ const styles = StyleSheet.create({
 })
 
 
-const handleBack = () => {
-    Alert.alert("Food delivery app", "Do you want to exit?", [
-        {
-            text: "Cancel",
-        },
-        {
-            text: "Close",
-            onPress: () => BackHandler.exitApp()
-        }
-    ], {cancelable: true})
-    return true
-}
-
 function Register({navigation}) {
     const [name, setName] = useState()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const {height} = useWindowDimensions()
 
-    useFocusEffect(() => {
-        BackHandler.addEventListener("hardwareBackPress", handleBack)
-        return () => BackHandler.removeEventListener("hardwareBackPress", handleBack)
-    }, [])
-
     const handleRegister = () => {
         if (name && email && password) {
             navigation.navigate("Login")
         }
     }
+
+    useFocusEffect(useCallback(() => {
+        const parent = navigation.dangerouslyGetParent()
+        if (parent) {
+            parent.setOptions({
+                tabBarVisible: false
+            })
+        }
+        return () => {
+            if (parent) {
+                parent.setOptions({
+                    tabBarVisible: true
+                })
+            }
+        }
+    }), [navigation.dangerouslyGetParent])
 
     return (
         <View style = {{flex: 1}}>

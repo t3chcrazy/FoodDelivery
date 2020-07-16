@@ -76,7 +76,20 @@ function Login({navigation, isLoggedIn, error, loginUser}) {
 
     useFocusEffect(() => {
         BackHandler.addEventListener("hardwareBackPress", handleBack)
-        return () => BackHandler.removeEventListener("hardwareBackPress", handleBack)
+        const parent = navigation.dangerouslyGetParent()
+        if (parent) {
+            parent.setOptions({
+                tabBarVisible: false
+            })
+        }
+        return () => {
+            BackHandler.removeEventListener("hardwareBackPress", handleBack)
+            if (parent) {
+                parent.setOptions({
+                    tabBarVisible: true
+                })
+            }
+        }
     }, [])
 
     useEffect(() => {

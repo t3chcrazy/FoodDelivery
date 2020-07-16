@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import { logoutUser } from '../store/login/loginActions'
 import { useFocusEffect } from '@react-navigation/native'
 import { MENU_HEIGHT, carouselArray, PANELS, FILTERS, INDI_SIZE } from '../config/Constants'
+import AsyncStorage from '@react-native-community/async-storage'
 
 
 const handleBack = () => {
@@ -214,9 +215,59 @@ function MainPage({navigation, logoutUser, isLoggedIn}) {
         navigation.navigate("Login")
     }
 
+    const redirectCheckout = () => {
+        if (isLoggedIn) {
+            navigation.navigate("Checkout")
+        }
+        else {
+            Alert.alert("Please login to access the checkout menu!")
+        }
+    }
+
+    const handleRestSubmit = e => {
+        console.log("Enter button is pressed", filter)
+        if (filterShops.length !== 0) {
+            AsyncStorage.getAllKeys((error, keys) => {
+                if (keys.indexOf("recentSearches") === -1) {
+                    const searches = JSON.stringify([filterShops[0]])
+                    AsyncStorage.setItem("recentSearches", searches, error => {
+                        if (!error) {
+                            console.log(`Filter was set sucessfully`)
+                        }
+                    })
+                }
+                else {
+                    AsyncStorage.getItem("recentSearches", (error, result) => {
+                        const savedSearches = JSON.parse(result)
+                        if (savedSearches.indexOf(filterShops[0]) === -1) {
+                            savedSearches.push(filterShops[0])
+                            AsyncStorage.setItem("recentSearches", JSON.stringify(savedSearches), error => {
+                                if (!error) {
+                                    console.log("Saved successfully")
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+        }
+    }
+
     useFocusEffect(() => {
         BackHandler.addEventListener("hardwareBackPress", handleBack)
-        return () => BackHandler.removeEventListener("hardwareBackPress", handleBack)
+        return () => {
+            BackHandler.removeEventListener("hardwareBackPress", handleBack)
+        }
+    }, [])
+
+    useEffect(() => {
+        return () => {
+            AsyncStorage.removeItem("recentSearches", error => {
+                if (!error) {
+                    console.log("Searches removed successfully")
+                }
+            })
+        }
     }, [])
 
     useEffect(() => {
@@ -248,6 +299,13 @@ function MainPage({navigation, logoutUser, isLoggedIn}) {
                     <View style = {styles.drawerOption}>
                         <Text style = {styles.drawerOptionText}>
                             Map
+                        </Text>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress = {redirectCheckout}>
+                    <View style = {styles.drawerOption}>
+                        <Text style = {styles.drawerOptionText}>
+                            Checkout
                         </Text>
                     </View>
                 </TouchableOpacity>
@@ -303,6 +361,7 @@ function MainPage({navigation, logoutUser, isLoggedIn}) {
                             placeholder = "Search restaurants you like"
                             value = {filter}
                             onChangeText = {text => setFilter(text)}
+                            onSubmitEditing = {handleRestSubmit}
                         />
                         <View style = {styles.searchFilter}>
                             <Image source = {require("../assets/img/filter.png")} />

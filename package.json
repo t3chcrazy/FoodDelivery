@@ -20,6 +20,7 @@
     "react": "16.11.0",
     "react-native": "0.62.1",
     "react-native-drawer-layout": "^2.0.0",
+    "react-native-geocoding": "^0.4.0",
     "react-native-geolocation-service": "^4.0.0",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-maps": "^0.27.1",

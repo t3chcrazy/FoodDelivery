@@ -6,6 +6,8 @@ import Checkout from '../screens/Checkout'
 import CartSummary from '../screens/CartSummary'
 import {createStackNavigator} from '@react-navigation/stack'
 import { useSelector } from 'react-redux'
+import Login from '../screens/Login'
+import Register from '../screens/Register'
 
 const Stack  = createStackNavigator()
 
@@ -17,13 +19,17 @@ function MainScreens() {
         }} initialRouteName = "MainPage">
             <Stack.Screen component = {AutoDetect} name = "AutoDetect" />
             <Stack.Screen component = {MainPage} name = "MainPage" />
-            <Stack.Screen component = {RestaurantMenu} name = "Menu" />
+            <Stack.Screen component = {Login} name = "Login" />
             {isLoggedIn?
             <> 
                 <Stack.Screen component = {Checkout} name = "Checkout" />
                 <Stack.Screen component = {CartSummary} name = "Summary" />
             </>
-            : null}
+            :
+            <>
+                <Stack.Screen component = {Register} name = "Register" />
+                <Stack.Screen component = {RestaurantMenu} name = "Menu" />
+            </>}
         </Stack.Navigator>
     )
 }

@@ -1,7 +1,5 @@
 import React from 'react'
 import {Image, StyleSheet} from 'react-native'
-import Login from '../screens/Login'
-import Register from '../screens/Register'
 import Search from '../screens/Search'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import MainScreens from './MainScreens'
@@ -48,8 +46,6 @@ function TabScreens() {
                 <Tabs.Screen component = {Login} name = "Login" />
                 <Tabs.Screen component = {Register} name = "Register" />
             </>} */}
-            <Tabs.Screen component = {Login} name = "Login" />
-            <Tabs.Screen component = {Register} name = "Register" />
         </Tabs.Navigator>
     )
 }

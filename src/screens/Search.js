@@ -1,5 +1,7 @@
-import React from 'react'
-import {View, Text, TextInput, useWindowDimensions, StyleSheet} from 'react-native'
+import React, {useState, useCallback} from 'react'
+import {View, Text, TextInput, useWindowDimensions, StyleSheet, TouchableOpacity, Image} from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
+import { useFocusEffect } from '@react-navigation/native'
 
 const styles = StyleSheet.create({
     root: {
@@ -15,11 +17,26 @@ const styles = StyleSheet.create({
         width: "100%",
         marginVertical: 10,
         fontSize: 15,
+    },
+    recentSearch: {
+        fontWeight: "bold",
+        marginVertical: 5,
+        marginRight: 10,
     }
 })
 
-function Search() {
+function Search({navigation}) {
+    const [searches, setSearches] = useState(null)
+    const [filter, setFilter] = useState("")
     const {width: deviceWidth} = useWindowDimensions()
+
+    useFocusEffect(useCallback(() => {
+        AsyncStorage.getItem("recentSearches", (error, result) => {
+            const searchResults = JSON.parse(result)
+            setSearches(searchResults)
+        })
+    }), [])
+
     return (
         <View style = {styles.root}>
             <View style = {{width: 0.9*deviceWidth}}>
@@ -27,9 +44,22 @@ function Search() {
                     style = {{...styles.input}}
                     placeholder = "Search for restaurants and food"
                     autoFocus = {true}
+                    value = {filter}
+                    onChangeText = {text => setFilter(text)}
                 />
                 <View style = {{marginVertical: 10}}>
                     <Text style = {{fontWeight: "bold", fontSize: 18}}>Recent searches</Text>
+                </View>
+                <View>
+                    {searches === null? null: 
+                    searches.map((shop, i) => 
+                    typeof shop === 'string'? null: 
+                    <TouchableOpacity onPress = {() => navigation.navigate("Menu", {name: shop.name, category: shop.category, rating: shop.rating})}>
+                        <View style = {{flexDirection: "row", justifyContent: "flex-start"}}>
+                            <Text style = {styles.recentSearch} key = {i}>{shop.name}</Text>
+                            <Image source = {require("../assets/img/redirect.png")} style = {{width: 30, height: 30}} />
+                        </View>
+                    </TouchableOpacity>)}
                 </View>
             </View>
         </View>
