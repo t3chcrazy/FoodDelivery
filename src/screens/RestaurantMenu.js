@@ -1,5 +1,5 @@
 import React, {useState, useCallback} from 'react'
-import {View, Text, ImageBackground, ScrollView, StyleSheet, Switch, SectionList, Image, TouchableWithoutFeedback} from 'react-native'
+import {View, Text, ImageBackground, ScrollView, StyleSheet, Switch, SectionList, Image, TouchableWithoutFeedback, Alert} from 'react-native'
 import menuData from '../data/menuData'
 import Ratings from '../components/Ratings'
 import Reviews from '../components/Reviews'
@@ -7,6 +7,7 @@ import MenuItem from '../components/MenuItem'
 import BottomTab from '../components/BottomTab'
 import { useFocusEffect, useRoute } from '@react-navigation/native'
 import { SPACING, MENU_HEGHT, CART_SIZE } from '../config/Constants'
+import { useSelector } from 'react-redux'
 
 
 const styles = StyleSheet.create({
@@ -105,6 +106,9 @@ const styles = StyleSheet.create({
 function RestaurantMenu({navigation}) {
     const[isVeg, setVeg] = useState(false)
     const [isEgg, setEgg] = useState(false)
+    const [quant, setQuant] = useState(0)
+    const [price, setPrice] = useState(0)
+    const isLoggedIn = useSelector(state => state.isLoggedIn)
 
     const {name, category, rating} = useRoute().params
 
@@ -124,15 +128,24 @@ function RestaurantMenu({navigation}) {
         }
     }), [navigation.dangerouslyGetParent])
 
+    const handleCheckoutClick = () => {
+        if (isLoggedIn) {
+            navigation.navigate("Checkout")
+        }
+        else {
+            Alert.alert("Please login to move to checkout!")
+        }
+    }
+
     return (
         <View style = {{flex: 1, backgroundColor: "#fff"}}>
             <BottomTab height = {MENU_HEGHT}>
                 <View style = {styles.checkOutTab}>
                     <View>
-                        <Text style = {styles.tabText}>2 items</Text>
-                        <Text style = {styles.tabText}>₹ 350</Text>
+                        <Text style = {styles.tabText}>{quant === 0? "No items in cart": `${quant} items`}</Text>
+                        <Text style = {styles.tabText}>₹ {price}</Text>
                     </View>
-                    <TouchableWithoutFeedback onPress = {() => navigation.navigate("Checkout")}>
+                    <TouchableWithoutFeedback onPress = {handleCheckoutClick}>
                         <View style = {{flexDirection: "row", alignItems: "center"}}>
                             <View style = {{paddingRight: 6}}>
                                 <Image source = {require("../assets/img/cart.png")} style = {{width: CART_SIZE, height: CART_SIZE}} />
@@ -202,7 +215,7 @@ function RestaurantMenu({navigation}) {
                         <SectionList
                             sections = {menuData}
                             keyExtractor = {(item, i) => i}
-                            renderItem = {({item}) => <MenuItem menuitem = {item} />}
+                            renderItem = {({item}) => <MenuItem quant = {quant} setQuant = {setQuant} total = {price} setTotal = {setPrice} menuitem = {item} />}
                             renderSectionHeader = {({section: {title}}) => <Text style = {styles.sectionHeaderText}>{title}</Text>}
                         />
                     </View>

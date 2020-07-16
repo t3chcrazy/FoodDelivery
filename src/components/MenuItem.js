@@ -51,16 +51,23 @@ const styles = StyleSheet.create({
     }
 })
 
-function MenuItem({menuitem}) {
+function MenuItem({menuitem, quant, setQuant, total, setTotal}) {
     const [count, setCount] = useState(0)
     const {name, desc, price, stars, isBest, image} = menuitem
     const clickLeft = () => {
         if (count > 0) {
+            setQuant(quant-1)
+            setTotal(total-price)
             setCount(count-1)
         }
         else {
             ToastAndroid.showWithGravity("Quantity of an item can't be less than 0", 2000, ToastAndroid.BOTTOM)
         }
+    }
+    const clickRight = () => {
+        setQuant(quant+1)
+        setTotal(total+price)
+        setCount(count+1)
     }
     return (
         <View style = {styles.container}>
@@ -79,7 +86,7 @@ function MenuItem({menuitem}) {
             </View>
             <View style = {styles.counterContainer}>
                 <View style = {styles.counter}>
-                    <TouchableWithoutFeedback onPress = {() => clickLeft()}>
+                    <TouchableWithoutFeedback onPress = {clickLeft}>
                         <View style = {styles.countButton}>
                             <Text>-</Text>
                         </View>
@@ -89,7 +96,7 @@ function MenuItem({menuitem}) {
                             {count}
                         </Text>
                     </View>
-                    <TouchableWithoutFeedback onPress = {() => setCount(count+1)} style = {styles.countButton}>
+                    <TouchableWithoutFeedback onPress = {clickRight} style = {styles.countButton}>
                         <View style = {styles.countButton}>
                             <Text>+</Text>
                         </View>

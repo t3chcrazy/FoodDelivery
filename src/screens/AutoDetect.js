@@ -4,6 +4,7 @@ import Geolocation from 'react-native-geolocation-service'
 import MapView, {Marker} from 'react-native-maps'
 import { useFocusEffect } from '@react-navigation/native'
 import { FRACTION, SEARCH_ICON } from '../config/Constants'
+import IconButton from '../components/IconButton'
 
 const styles = StyleSheet.create({
     root: {
@@ -108,6 +109,12 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "#fff"
+    },
+    backButton: {
+        position: "absolute",
+        left: 15,
+        top: 15,
+        zIndex: 100
     }
 })
 
@@ -187,6 +194,9 @@ function AutoDetect({navigation}) {
                 </Text>
             </View>: 
             <>
+                <View style = {styles.backButton}>
+                    <IconButton icon = {require("../assets/img/back.png")} size = {40} hasMargin = {false} action = {() => navigation.goBack()} />
+                </View>
                 <View style = {{height: winHeight*FRACTION}}>
                     <View style = {styles.mapWrapper}>
                         <MapView

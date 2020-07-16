@@ -6,7 +6,6 @@ import Filter from '../components/Filter'
 import restData from '../data/restData'
 import Restaurant from '../components/Restaurant'
 import DrawerLayout from 'react-native-drawer-layout'
-import {useRoute} from '@react-navigation/native'
 import { connect } from 'react-redux'
 import { logoutUser } from '../store/login/loginActions'
 import { useFocusEffect } from '@react-navigation/native'
@@ -130,7 +129,6 @@ const styles = StyleSheet.create({
         backgroundColor: "#C6C6C6"
     },
     user: {
-        alignItems: "flex-start",
         justifyContent: "center",
         paddingLeft: 10
     },
@@ -139,11 +137,6 @@ const styles = StyleSheet.create({
         width: 100,
         backgroundColor: "#C6C6C6",
         marginBottom: 7
-    },
-    userType: {
-        height: 8,
-        width: 88,
-        backgroundColor: "#C6C6C6"
     },
     userContent: {
         backgroundColor: "#C6C6C6",
@@ -173,10 +166,7 @@ const styles = StyleSheet.create({
         borderColor: "green"
     },
     drawerOption: {
-        borderBottomWidth: StyleSheet.hairlineWidth,
         paddingBottom: 5,
-        width: "40%",
-        marginBottom: 10,
     },
     drawerOptionText: {
         fontSize: 20,
@@ -186,18 +176,18 @@ const styles = StyleSheet.create({
 
 function MainPage({navigation, logoutUser, isLoggedIn}) {
     const [active, setActive] = useState(0)
+    const [filter, setFilter] = useState("")
+    const [filterShops, setFilterShops] = useState(restData)
     const {width} = useWindowDimensions()
-    const route = useRoute()
     const panelWidth = 0.9*width
     const drawerRef = useRef()
     const OFFSET = 30
     const clickProfile = () => {
         drawerRef.current.openDrawer()
     }
-    useEffect(() => {
-        console.log(`Value of isLoggedIn changed to ${isLoggedIn}`)
-    }, [isLoggedIn])
+
     const renderRestaurant = ({item}) => <Restaurant restaurant = {item} handlePress = {() => navigation.navigate("Menu", {name: item.name, category: item.category, rating: item.rating})} />
+    
     const debugScroll = e => {
         let activeTab = -1
         const offset = e.nativeEvent.contentOffset.x
@@ -218,37 +208,42 @@ function MainPage({navigation, logoutUser, isLoggedIn}) {
         }
         setActive(activeTab)
     }
-    const redireectLogin = () => {
+
+    const redirectLogin = () => {
         drawerRef.current.closeDrawer()
         navigation.navigate("Login")
     }
+
     useFocusEffect(() => {
         BackHandler.addEventListener("hardwareBackPress", handleBack)
         return () => BackHandler.removeEventListener("hardwareBackPress", handleBack)
     }, [])
+
+    useEffect(() => {
+        setFilterShops(restData.filter(rest => rest.name.toLowerCase().includes(filter.toLowerCase())))
+    }, [filter])
+
     const UserProfile = () => (
         <View style = {styles.profileContainer}>
             <View style = {styles.profile}>
                 <View style = {{marginVertical: 11}}>
-                    <IconButton size = {25} icon = {require("../assets/img/back.png")} />
+                    <IconButton action = {() => drawerRef.current.closeDrawer()} size = {25} icon = {require("../assets/img/back.png")} />
                 </View>
                 <View style = {styles.summary}>
-                    <View style = {styles.avatar}>
-                    </View>
+                    {/* <View style = {styles.avatar}>
+                    </View> */}
+                    <IconButton hasMargin = {false} icon = {require("../assets/img/user.png")} size = {48} />
                     <View style = {styles.user}>
-                        <View style = {styles.name}>
+                        <View>
+                            <Text style = {{fontSize: 16, fontWeight: "bold"}}>{isLoggedIn? "John Doe": "New User?"}</Text>
                         </View>
-                        <View style = {styles.userType}>
+                        <View>
+                            <Text>{isLoggedIn? "johndoe@gmail.com": "Click below to login!"}</Text>
                         </View>
                     </View>
                 </View>
             </View>
             <View style = {{paddingLeft: 20}}>
-                <View style = {styles.drawerOption}>
-                    <Text style = {styles.drawerOptionText}>
-                        User Profile
-                    </Text>
-                </View>
                 <TouchableOpacity onPress = {() => navigation.navigate("AutoDetect")}>
                     <View style = {styles.drawerOption}>
                         <Text style = {styles.drawerOptionText}>
@@ -256,7 +251,6 @@ function MainPage({navigation, logoutUser, isLoggedIn}) {
                         </Text>
                     </View>
                 </TouchableOpacity>
-                {new Array(6).fill(0).map(c => <View style = {styles.userContent}></View>)}
             </View>
             <View style = {styles.settingsContainer}>
                 {isLoggedIn? 
@@ -268,13 +262,12 @@ function MainPage({navigation, logoutUser, isLoggedIn}) {
                     </View>
                 </TouchableOpacity>
                 :
-                <TouchableOpacity onPress = {redireectLogin}>
+                <TouchableOpacity onPress = {redirectLogin}>
                     <View style = {[styles.logButton, styles.logIn]}>
                         <Text style = {{color: "green"}}>Login</Text>
                     </View>
                 </TouchableOpacity>}
                 {/* <View style = {styles.userContent}></View> */}
-                <Image source = {require("../assets/img/settings.png")} />
             </View>
         </View>
     )
@@ -292,9 +285,6 @@ function MainPage({navigation, logoutUser, isLoggedIn}) {
                             <IconButton size = {20} icon = {require("../assets/img/menu.png")} action = {clickProfile} />
                         </View>
                         <Image style = {{alignSelf: "center", width: 56, height: 54}} source = {require("../assets/img/logo.png")} />
-                        <View style = {styles.customize}>
-                            {isLoggedIn? <IconButton size = {20} icon = {require("../assets/img/settings.png")} />: null}
-                        </View>
                     </View>
                     <View style = {{width: 0.9*width, marginHorizontal: 0.05*width, ...styles.carousel}}>
                         <ScrollView horizontal = {true} pagingEnabled scrollEventThrottle = {16} onScroll = {debugScroll}>
@@ -308,7 +298,12 @@ function MainPage({navigation, logoutUser, isLoggedIn}) {
                         <View style = {styles.searchLogo}>
                             <Image source = {require("../assets/img/search.png")} style = {{width: 27, height: 27}} />
                         </View>
-                        <TextInput style = {styles.searchInput} placeholder = "Search food you like" />
+                        <TextInput 
+                            style = {styles.searchInput} 
+                            placeholder = "Search restaurants you like"
+                            value = {filter}
+                            onChangeText = {text => setFilter(text)}
+                        />
                         <View style = {styles.searchFilter}>
                             <Image source = {require("../assets/img/filter.png")} />
                         </View>
@@ -319,13 +314,14 @@ function MainPage({navigation, logoutUser, isLoggedIn}) {
                     <FlatList
                         keyExtractor = {item => item.name}
                         renderItem = {renderRestaurant}
-                        data = {restData}
+                        data = {filterShops}
                         style = {{width: 0.9*width, ...styles.restaurantList}}
                         removeClippedSubviews = {true}
                         initialNumToRender = {7}
                         getItemLayout = {(data, index) => (
                             {length: 76, offset: 76*index, index}
                         )}
+                        extraData = {filter}
                     />
                     <View style = {{height: MENU_HEIGHT+6, width: "100%", backgroundColor: "#f0f0f0"}}>
 

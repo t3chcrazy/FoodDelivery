@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
 function IconButton({size, icon, hasMargin = false, action = null}) {
     return (
         <View style = {hasMargin? styles.button: null}>
-            <TouchableWithoutFeedback onPress = {action}>
+            <TouchableWithoutFeedback onPress = {action} hitSlop = {{top: 20, left: 20, right: 20, bottom: 20}}>
                 <Image source = {icon} style = {{width: size, height: size}} />
             </TouchableWithoutFeedback>
         </View>

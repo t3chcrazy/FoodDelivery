@@ -80,7 +80,7 @@ function Restaurant({restaurant, handlePress}) {
                     <Text style = {styles.cuisine}>{cuisine}</Text>
                 </View>
                 <View style = {styles.secondDetails}>
-                    <Ratings rating = {rating} />
+                    <Ratings rating = {rating.toFixed(1)} />
                     <View style = {styles.delivery}>
                         <View style = {{paddingRight: 4}}>
                             <Image source = {require("../assets/img/Time.png")} style = {{width: TIME_SIZE, height: TIME_SIZE}} />
