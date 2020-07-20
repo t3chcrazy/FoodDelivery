@@ -4,6 +4,7 @@ import Search from '../screens/Search'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import MainScreens from './MainScreens'
 import { useSelector } from 'react-redux'
+import Placeholder from '../screens/Placeholder'
 
 const Tabs = createBottomTabNavigator()
 
@@ -30,12 +31,18 @@ function TabScreens() {
                             return <Image style = {styles.icon} source = {require("../assets/img/home.png")} />
                         case "Search":
                             return <Image style = {styles.icon} source = {require("../assets/img/search.png")} />
+                        case "Offers":
+                            return <Image style = {styles.icon} source = {require("../assets/img/offers.png")} />
+                        case "Profile":
+                            return <Image style = {styles.icon} source = {require("../assets/img/login.png")} />
                     }
                 }
             })}
         >
             <Tabs.Screen component = {MainScreens} name = "MainScreens" options = {{title: "Main"}} />
             <Tabs.Screen component = {Search} name = "Search" />
+            <Tabs.Screen component = {Placeholder} name = "Offers" />
+            <Tabs.Screen component = {Placeholder} name = "Profile" />
         </Tabs.Navigator>
     )
 }

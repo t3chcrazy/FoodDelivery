@@ -13,19 +13,6 @@ import { MENU_HEIGHT, carouselArray, PANELS, FILTERS, INDI_SIZE, OFFSET } from '
 import AsyncStorage from '@react-native-community/async-storage'
 
 
-const handleBack = () => {
-    Alert.alert("Food delivery app", "Do you want to exit?", [
-        {
-            text: "Cancel",
-        },
-        {
-            text: "Close",
-            onPress: () => BackHandler.exitApp()
-        }
-    ], {cancelable: true})
-    return true
-}
-
 const styles = StyleSheet.create({
     header: {
         flexDirection: "row",
@@ -260,15 +247,14 @@ function MainPage({navigation, logoutUser, isLoggedIn}) {
     }
 
     useFocusEffect(() => {
-        BackHandler.addEventListener("hardwareBackPress", handleBack)
         startAutoScroll()
         return () => {
             clearInterval(intervalRef.current)
-            BackHandler.removeEventListener("hardwareBackPress", handleBack)
         }
     }, [])
 
     useEffect(() => {
+        console.log(navigation.dangerouslyGetState().routes)
         startAutoScroll()
         return () => {
             clearInterval(intervalRef.current)
@@ -294,7 +280,7 @@ function MainPage({navigation, logoutUser, isLoggedIn}) {
                 <View style = {styles.summary}>
                     {/* <View style = {styles.avatar}>
                     </View> */}
-                    <IconButton hasMargin = {false} icon = {require("../assets/img/user.png")} size = {48} />
+                    <IconButton hasMargin = {false} icon = {require("../assets/img/login.png")} size = {48} />
                     <View style = {styles.user}>
                         <View>
                             <Text style = {{fontSize: 16, fontWeight: "bold"}}>{isLoggedIn? "John Doe": "New User?"}</Text>

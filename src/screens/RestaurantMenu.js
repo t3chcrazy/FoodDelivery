@@ -133,7 +133,7 @@ function RestaurantMenu({navigation}) {
             navigation.navigate("Checkout")
         }
         else {
-            Alert.alert("Please login to move to checkout!")
+            navigation.navigate("Login")
         }
     }
 

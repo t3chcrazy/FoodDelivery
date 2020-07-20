@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react'
 import {View, Text, TextInput, ImageBackground, StyleSheet, useWindowDimensions, TouchableWithoutFeedback, KeyboardAvoidingView, PermissionsAndroid, BackHandler, Alert, TouchableOpacity} from 'react-native'
-import { useFocusEffect } from '@react-navigation/native'
 import { connect } from 'react-redux'
 import { loginUser } from '../store/login/loginActions'
+import { useFocusEffect } from '@react-navigation/native'
 
 const styles = StyleSheet.create({
     imageCover: {
@@ -56,26 +56,12 @@ const styles = StyleSheet.create({
 })
 
 
-const handleBack = () => {
-    Alert.alert("Food delivery app", "Do you want to exit?", [
-        {
-            text: "Cancel",
-        },
-        {
-            text: "Close",
-            onPress: () => BackHandler.exitApp()
-        }
-    ], {cancelable: true})
-    return true
-}
-
 function Login({navigation, isLoggedIn, error, loginUser}) {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const {height} = useWindowDimensions()
 
     useFocusEffect(() => {
-        BackHandler.addEventListener("hardwareBackPress", handleBack)
         const parent = navigation.dangerouslyGetParent()
         if (parent) {
             parent.setOptions({
@@ -83,7 +69,6 @@ function Login({navigation, isLoggedIn, error, loginUser}) {
             })
         }
         return () => {
-            BackHandler.removeEventListener("hardwareBackPress", handleBack)
             if (parent) {
                 parent.setOptions({
                     tabBarVisible: true
