@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react'
+import React, {useState, useCallback, useEffect} from 'react'
 import {View, Text, ImageBackground, ScrollView, StyleSheet, Switch, SectionList, Image, TouchableWithoutFeedback, Alert} from 'react-native'
 import menuData from '../data/menuData'
 import Ratings from '../components/Ratings'
@@ -105,9 +105,9 @@ const styles = StyleSheet.create({
 
 function RestaurantMenu({navigation}) {
     const[isVeg, setVeg] = useState(false)
-    const [isEgg, setEgg] = useState(false)
     const [quant, setQuant] = useState(0)
     const [price, setPrice] = useState(0)
+    const [items, setItems] = useState(() => menuData)
     const isLoggedIn = useSelector(state => state.isLoggedIn)
 
     const {name, category, rating} = useRoute().params
@@ -136,6 +136,20 @@ function RestaurantMenu({navigation}) {
             Alert.alert("Please login to move to checkout!")
         }
     }
+
+    useEffect(() => {
+        if (isVeg) {
+            setItems(menuData.map(section => {
+                const newSection = {...section}
+                newSection.data = section.data.filter(it => it.isVeg)
+                return newSection
+            }))
+        }
+        else {
+            console.log("All items selected")
+            setItems(menuData)
+        }
+    }, [isVeg])
 
     return (
         <View style = {{flex: 1, backgroundColor: "#fff"}}>
@@ -200,23 +214,13 @@ function RestaurantMenu({navigation}) {
                                     value = {isVeg}
                                 />
                             </View>
-                            <View style = {{...styles.criteria, marginLeft: 2}}>
-                                <Text style = {styles.criteriaText}>
-                                    Include Egg
-                                </Text>
-                                <Switch 
-                                    trackColor = {{false: "#767577", true: "#9b59b6"}}
-                                    thumbColor = {isEgg? "#3D037E": "#f4f3f4"}
-                                    onValueChange = {() => setEgg(prev => !prev)}
-                                    value = {isEgg}
-                                />
-                            </View>
                         </View>
                         <SectionList
-                            sections = {menuData}
+                            sections = {items}
                             keyExtractor = {(item, i) => i}
                             renderItem = {({item}) => <MenuItem quant = {quant} setQuant = {setQuant} total = {price} setTotal = {setPrice} menuitem = {item} />}
                             renderSectionHeader = {({section: {title}}) => <Text style = {styles.sectionHeaderText}>{title}</Text>}
+                            extraData = {isVeg}
                         />
                     </View>
                     <View style = {{height: MENU_HEGHT+20, width: "100%"}}>

@@ -19,6 +19,7 @@ function MainScreens() {
         }} initialRouteName = "MainPage">
             <Stack.Screen component = {AutoDetect} name = "AutoDetect" />
             <Stack.Screen component = {MainPage} name = "MainPage" />
+            <Stack.Screen component = {RestaurantMenu} name = "Menu" />
             <Stack.Screen component = {Login} name = "Login" />
             {isLoggedIn?
             <> 
@@ -28,7 +29,6 @@ function MainScreens() {
             :
             <>
                 <Stack.Screen component = {Register} name = "Register" />
-                <Stack.Screen component = {RestaurantMenu} name = "Menu" />
             </>}
         </Stack.Navigator>
     )

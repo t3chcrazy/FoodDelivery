@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react'
+import React, {useState, useCallback, useEffect} from 'react'
 import {View, Text, TextInput, useWindowDimensions, StyleSheet, TouchableOpacity, Image} from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 import { useFocusEffect } from '@react-navigation/native'
@@ -27,15 +27,32 @@ const styles = StyleSheet.create({
 
 function Search({navigation}) {
     const [searches, setSearches] = useState(null)
+    const [filtered, setFiltered] = useState(null)
     const [filter, setFilter] = useState("")
     const {width: deviceWidth} = useWindowDimensions()
 
-    useFocusEffect(useCallback(() => {
+    useEffect(() => {
         AsyncStorage.getItem("recentSearches", (error, result) => {
             const searchResults = JSON.parse(result)
             setSearches(searchResults)
+            setFiltered(searchResults)
         })
-    }), [])
+    }, [])
+
+    useFocusEffect(() => {
+        console.log("hello")
+        // AsyncStorage.getItem("recentSearches", (error, result) => {
+        //     const searchResults = JSON.parse(result)
+        //     setSearches(searchResults)
+        //     setFiltered(searchResults)
+        // })
+    }, [])
+
+    useEffect(() => {
+        if (searches !== null) {
+            setFiltered(searches.filter(shop => shop.name.toLowerCase().includes(filter.toLowerCase())))
+        }
+    }, [filter])
 
     return (
         <View style = {styles.root}>
@@ -51,8 +68,8 @@ function Search({navigation}) {
                     <Text style = {{fontWeight: "bold", fontSize: 18}}>Recent searches</Text>
                 </View>
                 <View>
-                    {searches === null? null: 
-                    searches.map((shop, i) => 
+                    {filtered === null? null: 
+                    filtered.map((shop, i) => 
                     typeof shop === 'string'? null: 
                     <TouchableOpacity onPress = {() => navigation.navigate("Menu", {name: shop.name, category: shop.category, rating: shop.rating})}>
                         <View style = {{flexDirection: "row", justifyContent: "flex-start"}}>

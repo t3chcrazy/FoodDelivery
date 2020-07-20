@@ -8,15 +8,17 @@ const menuData = [
                 stars: 4,
                 price: 99,
                 isBest: true,
-                image: require("../assets/img/choco.png")
+                image: require("../assets/img/choco.png"),
+                isVeg: false
             },
             {
-                name: "Paneer & Onion",
-                desc: "Creamy Paneer Onion",
+                name: "Chicken Pizza",
+                desc: "Succulent chicken pizza",
                 stars: 3,
                 price: 95,
                 isBest: true,
-                image: require("../assets/img/paneer.png")
+                image: require("../assets/img/paneer.png"),
+                isVeg: false
             },
             {
                 name: "Garlic Breadsticks",
@@ -24,7 +26,8 @@ const menuData = [
                 stars: 4,
                 price: 99,
                 isBest: true,
-                image: require("../assets/img/garlic.png")
+                image: require("../assets/img/garlic.png"),
+                isVeg: true
             },
         ]
     },
@@ -37,7 +40,8 @@ const menuData = [
                 stars: 4,
                 price: 99,
                 isBest: false,
-                image: require("../assets/img/margarita.png")
+                image: require("../assets/img/margarita.png"),
+                isVeg: true
             },
             {
                 name: "Cheese n Corn",
@@ -45,7 +49,8 @@ const menuData = [
                 stars: 3,
                 price: 165,
                 isBest: false,
-                image: require("../assets/img/corn.png")
+                image: require("../assets/img/corn.png"),
+                isVeg: true
             },
             {
                 name: "Achari do pyaza",
@@ -53,7 +58,8 @@ const menuData = [
                 stars: 2,
                 price: 80,
                 isBest: false,
-                image: require("../assets/img/subway.png")
+                image: require("../assets/img/subway.png"),
+                isVeg: true
             }
         ]
     }

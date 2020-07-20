@@ -48,6 +48,8 @@ export const carouselArray = [
     }
 ]
 
+export const OFFSET = 30
+
 export const MENU_HEIGHT = 58
 
 export const PANELS = carouselArray.length

@@ -9,7 +9,7 @@ import DrawerLayout from 'react-native-drawer-layout'
 import { connect } from 'react-redux'
 import { logoutUser } from '../store/login/loginActions'
 import { useFocusEffect } from '@react-navigation/native'
-import { MENU_HEIGHT, carouselArray, PANELS, FILTERS, INDI_SIZE } from '../config/Constants'
+import { MENU_HEIGHT, carouselArray, PANELS, FILTERS, INDI_SIZE, OFFSET } from '../config/Constants'
 import AsyncStorage from '@react-native-community/async-storage'
 
 
@@ -100,20 +100,10 @@ const styles = StyleSheet.create({
         backgroundColor: "red",
         height: 400
     },
-    // profileContainer: {
-    //     height: 344,
-    //     width: 216,
-    //     position: "absolute",
-    //     right: 0,
-    //     top: 30,
-    //     borderTopLeftRadius: 10,
-    //     borderBottomLeftRadius: 10,
-    //     backgroundColor: "#fff"
-    // },
     profileContainer: {
         backgroundColor: "#dfe6e9",
         height: "100%",
-        width: "90%"
+        width: "65%"
     },
     profile: {
         paddingLeft: 23,
@@ -182,7 +172,10 @@ function MainPage({navigation, logoutUser, isLoggedIn}) {
     const {width} = useWindowDimensions()
     const panelWidth = 0.9*width
     const drawerRef = useRef()
-    const OFFSET = 30
+    const intervalRef = useRef()
+    const sliderRef = useRef()
+    const offsetRef = useRef(0)
+
     const clickProfile = () => {
         drawerRef.current.openDrawer()
     }
@@ -192,6 +185,7 @@ function MainPage({navigation, logoutUser, isLoggedIn}) {
     const debugScroll = e => {
         let activeTab = -1
         const offset = e.nativeEvent.contentOffset.x
+        offsetRef.current = offset
         if (offset >= (PANELS-1)*panelWidth-OFFSET) {
             activeTab = PANELS-1
         }
@@ -225,7 +219,6 @@ function MainPage({navigation, logoutUser, isLoggedIn}) {
     }
 
     const handleRestSubmit = e => {
-        console.log("Enter button is pressed", filter)
         if (filterShops.length !== 0) {
             AsyncStorage.getAllKeys((error, keys) => {
                 if (keys.indexOf("recentSearches") === -1) {
@@ -233,6 +226,7 @@ function MainPage({navigation, logoutUser, isLoggedIn}) {
                     AsyncStorage.setItem("recentSearches", searches, error => {
                         if (!error) {
                             console.log(`Filter was set sucessfully`)
+                            setFilter("")
                         }
                     })
                 }
@@ -253,15 +247,32 @@ function MainPage({navigation, logoutUser, isLoggedIn}) {
         }
     }
 
+    const startAutoScroll = () => {
+        intervalRef.current = setInterval(() => {
+            if (offsetRef.current >= (PANELS-1)*panelWidth) {
+                sliderRef.current.scrollTo({x: 0})
+            }
+            else {
+                offsetRef.current += panelWidth
+                sliderRef.current.scrollTo({x: offsetRef.current})
+            }
+        }, 3000)
+    }
+
     useFocusEffect(() => {
         BackHandler.addEventListener("hardwareBackPress", handleBack)
+        startAutoScroll()
         return () => {
+            clearInterval(intervalRef.current)
             BackHandler.removeEventListener("hardwareBackPress", handleBack)
         }
     }, [])
 
     useEffect(() => {
+        startAutoScroll()
         return () => {
+            clearInterval(intervalRef.current)
+            console.log("Cleanup effects in MainPage.js")
             AsyncStorage.removeItem("recentSearches", error => {
                 if (!error) {
                     console.log("Searches removed successfully")
@@ -345,7 +356,14 @@ function MainPage({navigation, logoutUser, isLoggedIn}) {
                         <Image style = {{alignSelf: "center", width: 56, height: 54}} source = {require("../assets/img/logo.png")} />
                     </View>
                     <View style = {{width: 0.9*width, marginHorizontal: 0.05*width, ...styles.carousel}}>
-                        <ScrollView horizontal = {true} pagingEnabled scrollEventThrottle = {16} onScroll = {debugScroll}>
+                        <ScrollView 
+                            ref = {sliderRef} 
+                            horizontal = {true} 
+                            pagingEnabled 
+                            scrollEventThrottle = {16} 
+                            onScroll = {debugScroll} 
+                            snapToOffsets = {new Array(PANELS).fill(0).map((item, ind) => ind*panelWidth)}
+                        >
                             {carouselArray.map((c, i) => <CarouselItem key = {i} image = {c.icon} text = {c.title} />)}
                         </ScrollView>
                         <View style = {styles.indicators}>
