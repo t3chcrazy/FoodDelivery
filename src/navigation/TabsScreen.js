@@ -30,22 +30,12 @@ function TabScreens() {
                             return <Image style = {styles.icon} source = {require("../assets/img/home.png")} />
                         case "Search":
                             return <Image style = {styles.icon} source = {require("../assets/img/search.png")} />
-                        case "Login":
-                            return <Image style = {styles.icon} source = {require("../assets/img/login.png")} />
-                        case "Register":
-                            return <Image style = {styles.icon} source = {require("../assets/img/login.png")} />
                     }
                 }
             })}
         >
             <Tabs.Screen component = {MainScreens} name = "MainScreens" options = {{title: "Main"}} />
             <Tabs.Screen component = {Search} name = "Search" />
-            {/* {isLoggedIn?
-            null:
-            <>
-                <Tabs.Screen component = {Login} name = "Login" />
-                <Tabs.Screen component = {Register} name = "Register" />
-            </>} */}
         </Tabs.Navigator>
     )
 }

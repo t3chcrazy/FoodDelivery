@@ -31,26 +31,17 @@ function Search({navigation}) {
     const [filter, setFilter] = useState("")
     const {width: deviceWidth} = useWindowDimensions()
 
-    useEffect(() => {
+    useFocusEffect(useCallback(() => {
         AsyncStorage.getItem("recentSearches", (error, result) => {
             const searchResults = JSON.parse(result)
             setSearches(searchResults)
             setFiltered(searchResults)
         })
-    }, [])
-
-    useFocusEffect(() => {
-        console.log("hello")
-        // AsyncStorage.getItem("recentSearches", (error, result) => {
-        //     const searchResults = JSON.parse(result)
-        //     setSearches(searchResults)
-        //     setFiltered(searchResults)
-        // })
-    }, [])
+    }, []))
 
     useEffect(() => {
         if (searches !== null) {
-            setFiltered(searches.filter(shop => shop.name.toLowerCase().includes(filter.toLowerCase())))
+            setFiltered(searches.filter(shop => shop.name.toLowerCase().startsWith(filter.toLowerCase())))
         }
     }, [filter])
 
